@@ -1,0 +1,990 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Evaluación Psicológica - Bienestar Estudiantil</title>
+    <style>
+        :root {
+            --primary: #2c5aa0;
+            --primary-dark: #1e3d72;
+            --secondary: #6c63ff;
+            --accent: #ff6b6b;
+            --success: #4caf50;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 10px;
+            --shadow: 0 6px 20px rgba(0,0,0,0.1);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 50px 30px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.05"><circle cx="50" cy="50" r="2" fill="white"/></svg>') repeat;
+        }
+        
+        .logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .header h1 {
+            font-size: 2.4em;
+            margin-bottom: 15px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+        
+        .badge {
+            background: var(--accent);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            margin-top: 20px;
+            display: inline-block;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-container {
+            padding: 40px;
+        }
+        
+        .form-section {
+            margin-bottom: 40px;
+            padding: 30px;
+            border: 2px solid #e8f4fc;
+            border-radius: var(--border-radius);
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .form-section:hover {
+            border-color: var(--primary);
+            box-shadow: 0 8px 25px rgba(44, 90, 160, 0.15);
+            transform: translateY(-2px);
+        }
+        
+        .section-title {
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--primary);
+            font-weight: 700;
+        }
+        
+        .pregunta {
+            margin-bottom: 30px;
+            padding: 25px;
+            border: 1px solid #e1e8ed;
+            border-radius: var(--border-radius);
+            background: white;
+            transition: var(--transition);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+        }
+        
+        .pregunta:hover {
+            border-color: var(--primary);
+            box-shadow: 0 4px 15px rgba(44, 90, 160, 0.1);
+        }
+        
+        .pregunta h3 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-left: 4px solid var(--primary);
+            padding-left: 15px;
+        }
+        
+        .opciones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 12px;
+        }
+        
+        .opcion {
+            display: flex;
+            align-items: flex-start;
+            padding: 18px;
+            border: 2px solid #e1e8ed;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            background: white;
+        }
+        
+        .opcion:hover {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, #f0f8ff 0%, #ffffff 100%);
+            transform: translateX(5px);
+        }
+        
+        .opcion input {
+            margin-right: 15px;
+            margin-top: 3px;
+        }
+        
+        .opcion label {
+            cursor: pointer;
+            flex: 1;
+            font-size: 0.95em;
+            line-height: 1.5;
+            color: var(--dark);
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1em;
+        }
+        
+        .input-group input, .input-group textarea {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e8ed;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            transition: var(--transition);
+            background: white;
+            font-family: inherit;
+        }
+        
+        .input-group input:focus, .input-group textarea:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.1);
+            background: #f8fbff;
+        }
+        
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 18px 45px;
+            font-size: 1.2em;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            display: block;
+            margin: 50px auto 0;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 20px rgba(44, 90, 160, 0.3);
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(44, 90, 160, 0.4);
+        }
+        
+        .btn-submit:active {
+            transform: translateY(-1px);
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 60px;
+        }
+        
+        .spinner {
+            border: 5px solid var(--light-gray);
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 25px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .success-message {
+            display: none;
+            background: linear-gradient(135deg, var(--success) 0%, #5cb85c 100%);
+            color: white;
+            padding: 35px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            margin: 40px 0;
+            box-shadow: 0 8px 25px rgba(39, 174, 96, 0.3);
+        }
+        
+        .success-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .progress-indicator {
+            text-align: center;
+            margin: 25px 0;
+            color: var(--gray);
+            font-weight: 600;
+            font-size: 1em;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: var(--border-radius);
+            border: 1px solid #e1e8ed;
+        }
+        
+        .form-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        
+        .btn-nav {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 25px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .btn-nav:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(44, 90, 160, 0.3);
+        }
+        
+        .form-step {
+            display: none;
+        }
+        
+        .form-step.active {
+            display: block;
+        }
+        
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            gap: 12px;
+        }
+        
+        .step {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            transition: var(--transition);
+            border: 2px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .step.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                border-radius: 12px;
+            }
+            
+            .header {
+                padding: 35px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .form-container {
+                padding: 25px;
+            }
+            
+            .opciones {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-section {
+                padding: 20px;
+            }
+            
+            .btn-submit {
+                width: 100%;
+            }
+            
+            .pregunta {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <span class="logo">🧠</span>
+            <h1>Evaluación Psicológica Estudiantil</h1>
+            <p>Test psicológico completo para tu bienestar integral - 12 preguntas</p>
+            <div class="badge">EVALUACIÓN CONFIDENCIAL</div>
+        </div>
+        
+        <form id="evaluationForm">
+            <div class="form-container">
+                <!-- Paso 1: Información Personal -->
+                <div class="form-step active" id="step1">
+                    <div class="form-section">
+                        <div class="section-title">
+                            <span>👤</span>
+                            Información Personal
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="nombre">Nombre completo</label>
+                            <input type="text" id="nombre" name="nombre" required placeholder="Ingresa tu nombre completo">
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="email">Correo institucional</label>
+                            <input type="email" id="email" name="email" required placeholder="ejemplo@institucion.edu">
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <div></div>
+                        <button type="button" class="btn-nav" onclick="nextStep(1)">Siguiente →</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 2: Área Familiar y Social -->
+                <div class="form-step" id="step2">
+                    <div class="step-indicator">
+                        <div class="step"></div>
+                        <div class="step active"></div>
+                        <div class="step"></div>
+                        <div class="step"></div>
+                    </div>
+                    
+                    <div class="progress-indicator">
+                        Preguntas 1-4 de 12 - Área Familiar y Social
+                    </div>
+                    
+                    <!-- Pregunta 1: Comunicación Familiar -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>1. Comunicación en el entorno familiar</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p1_1" name="comunicacion_familiar" value="1" required>
+                                    <label for="p1_1">Comunicación muy limitada o conflictiva</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p1_2" name="comunicacion_familiar" value="2">
+                                    <label for="p1_2">Comunicación esporádica con tensiones</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p1_3" name="comunicacion_familiar" value="3">
+                                    <label for="p1_3">Comunicación básica, algunos desacuerdos</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p1_4" name="comunicacion_familiar" value="4">
+                                    <label for="p1_4">Comunicación regular con diálogo abierto</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p1_5" name="comunicacion_familiar" value="5">
+                                    <label for="p1_5">Buena comunicación y apoyo constante</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 2: Apoyo Familiar -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>2. Apoyo familiar en los estudios</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p2_1" name="apoyo_familiar" value="1" required>
+                                    <label for="p2_1">Sin apoyo o interferencia familiar</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p2_2" name="apoyo_familiar" value="2">
+                                    <label for="p2_2">Apoyo muy limitado o condicionado</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p2_3" name="apoyo_familiar" value="3">
+                                    <label for="p2_3">Apoyo básico en situaciones críticas</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p2_4" name="apoyo_familiar" value="4">
+                                    <label for="p2_4">Buen apoyo emocional y logístico</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p2_5" name="apoyo_familiar" value="5">
+                                    <label for="p2_5">Apoyo integral y muy motivador</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 3: Relaciones Sociales -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>3. Relaciones con compañeros y amigos</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p3_1" name="relaciones_sociales" value="1" required>
+                                    <label for="p3_1">Aislamiento o relaciones conflictivas</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p3_2" name="relaciones_sociales" value="2">
+                                    <label for="p3_2">Relaciones limitadas o superficiales</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p3_3" name="relaciones_sociales" value="3">
+                                    <label for="p3_3">Algunas relaciones positivas pero pocas</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p3_4" name="relaciones_sociales" value="4">
+                                    <label for="p3_4">Buenas relaciones con varios compañeros</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p3_5" name="relaciones_sociales" value="5">
+                                    <label for="p3_5">Red social sólida y apoyo mutuo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 4: Integración Grupal -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>4. Integración en grupos de estudio</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p4_1" name="integracion_grupal" value="1" required>
+                                    <label for="p4_1">No participo en grupos de estudio</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p4_2" name="integracion_grupal" value="2">
+                                    <label for="p4_2">Participación esporádica sin integración</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p4_3" name="integracion_grupal" value="3">
+                                    <label for="p4_3">Participo ocasionalmente en algunos grupos</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p4_4" name="integracion_grupal" value="4">
+                                    <label for="p4_4">Buena integración en grupos de estudio</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p4_5" name="integracion_grupal" value="5">
+                                    <label for="p4_5">Liderazgo activo en grupos colaborativos</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn-nav" onclick="prevStep(2)">← Anterior</button>
+                        <button type="button" class="btn-nav" onclick="nextStep(2)">Siguiente →</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 3: Área Académica -->
+                <div class="form-step" id="step3">
+                    <div class="step-indicator">
+                        <div class="step"></div>
+                        <div class="step"></div>
+                        <div class="step active"></div>
+                        <div class="step"></div>
+                    </div>
+                    
+                    <div class="progress-indicator">
+                        Preguntas 5-8 de 12 - Área Académica
+                    </div>
+                    
+                    <!-- Pregunta 5: Rendimiento Académico -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>5. Rendimiento académico actual</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p5_1" name="rendimiento_academico" value="1" required>
+                                    <label for="p5_1">Rendimiento muy por debajo del esperado</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p5_2" name="rendimiento_academico" value="2">
+                                    <label for="p5_2">Dificultades significativas en varias materias</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p5_3" name="rendimiento_academico" value="3">
+                                    <label for="p5_3">Rendimiento regular con áreas de mejora</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p5_4" name="rendimiento_academico" value="4">
+                                    <label for="p5_4">Buen rendimiento en la mayoría de materias</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p5_5" name="rendimiento_academico" value="5">
+                                    <label for="p5_5">Excelente rendimiento académico general</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 6: Organización del Tiempo -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>6. Organización del tiempo de estudio</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p6_1" name="organizacion_tiempo" value="1" required>
+                                    <label for="p6_1">Sin organización, estudio desordenado</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p6_2" name="organizacion_tiempo" value="2">
+                                    <label for="p6_2">Organización inconsistente e ineficaz</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p6_3" name="organizacion_tiempo" value="3">
+                                    <label for="p6_3">Organización básica con mejoras posibles</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p6_4" name="organizacion_tiempo" value="4">
+                                    <label for="p6_4">Buena organización y planificación</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p6_5" name="organizacion_tiempo" value="5">
+                                    <label for="p6_5">Excelente gestión y optimización del tiempo</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 7: Motivación Académica -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>7. Nivel de motivación e interés académico</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p7_1" name="motivacion_academica" value="1" required>
+                                    <label for="p7_1">Desmotivación significativa</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p7_2" name="motivacion_academica" value="2">
+                                    <label for="p7_2">Motivación baja e inconsistente</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p7_3" name="motivacion_academica" value="3">
+                                    <label for="p7_3">Motivación moderada en algunas áreas</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p7_4" name="motivacion_academica" value="4">
+                                    <label for="p7_4">Buena motivación y compromiso</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p7_5" name="motivacion_academica" value="5">
+                                    <label for="p7_5">Alta motivación y entusiasmo académico</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 8: Participación en Clase -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>8. Participación activa en clases</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p8_1" name="participacion_clase" value="1" required>
+                                    <label for="p8_1">Nunca participo en discusiones de clase</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p8_2" name="participacion_clase" value="2">
+                                    <label for="p8_2">Participación muy ocasional y pasiva</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p8_3" name="participacion_clase" value="3">
+                                    <label for="p8_3">Participo cuando me lo solicitan</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p8_4" name="participacion_clase" value="4">
+                                    <label for="p8_4">Participación activa y regular</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p8_5" name="participacion_clase" value="5">
+                                    <label for="p8_5">Lidero discusiones y contribuyo significativamente</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn-nav" onclick="prevStep(3)">← Anterior</button>
+                        <button type="button" class="btn-nav" onclick="nextStep(3)">Siguiente →</button>
+                    </div>
+                </div>
+                
+                <!-- Paso 4: Área Personal y Desarrollo -->
+                <div class="form-step" id="step4">
+                    <div class="step-indicator">
+                        <div class="step"></div>
+                        <div class="step"></div>
+                        <div class="step"></div>
+                        <div class="step active"></div>
+                    </div>
+                    
+                    <div class="progress-indicator">
+                        Preguntas 9-12 de 12 - Área Personal y Desarrollo
+                    </div>
+                    
+                    <!-- Pregunta 9: Estado Emocional -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>9. Estado emocional general</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p9_1" name="estado_emocional" value="1" required>
+                                    <label for="p9_1">Estado emocional muy afectado</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p9_2" name="estado_emocional" value="2">
+                                    <label for="p9_2">Frecuentes altibajos emocionales</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p9_3" name="estado_emocional" value="3">
+                                    <label for="p9_3">Estado emocional estable con momentos difíciles</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p9_4" name="estado_emocional" value="4">
+                                    <label for="p9_4">Buen equilibrio emocional general</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p9_5" name="estado_emocional" value="5">
+                                    <label for="p9_5">Excelente estado emocional y resiliencia</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 10: Calidad del Sueño -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>10. Calidad y cantidad del sueño</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p10_1" name="calidad_sueno" value="1" required>
+                                    <label for="p10_1">Sueño muy irregular e insuficiente</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p10_2" name="calidad_sueno" value="2">
+                                    <label for="p10_2">Dificultades frecuentes para dormir bien</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p10_3" name="calidad_sueno" value="3">
+                                    <label for="p10_3">Sueño aceptable con interrupciones ocasionales</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p10_4" name="calidad_sueno" value="4">
+                                    <label for="p10_4">Buen descanso la mayoría de las noches</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p10_5" name="calidad_sueno" value="5">
+                                    <label for="p10_5">Sueño reparador y consistente</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 11: Manejo del Estrés -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>11. Manejo del estrés académico</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p11_1" name="manejo_estres" value="1" required>
+                                    <label for="p11_1">Estrés abrumador sin herramientas</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p11_2" name="manejo_estres" value="2">
+                                    <label for="p11_2">Dificultad para manejar presión académica</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p11_3" name="manejo_estres" value="3">
+                                    <label for="p11_3">Manejo básico con momentos de tensión</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p11_4" name="manejo_estres" value="4">
+                                    <label for="p11_4">Buen manejo de situaciones estresantes</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p11_5" name="manejo_estres" value="5">
+                                    <label for="p11_5">Excelentes estrategias de afrontamiento</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pregunta 12: Perspectiva Futuro -->
+                    <div class="form-section">
+                        <div class="pregunta">
+                            <h3>12. Perspectiva sobre el futuro profesional</h3>
+                            <div class="opciones">
+                                <div class="opcion">
+                                    <input type="radio" id="p12_1" name="perspectiva_futuro" value="1" required>
+                                    <label for="p12_1">Incertidumbre o pesimismo sobre el futuro</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p12_2" name="perspectiva_futuro" value="2">
+                                    <label for="p12_2">Dudas significativas sobre dirección profesional</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p12_3" name="perspectiva_futuro" value="3">
+                                    <label for="p12_3">Algunas ideas pero sin claridad completa</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p12_4" name="perspectiva_futuro" value="4">
+                                    <label for="p12_4">Buena claridad sobre metas profesionales</label>
+                                </div>
+                                <div class="opcion">
+                                    <input type="radio" id="p12_5" name="perspectiva_futuro" value="5">
+                                    <label for="p12_5">Visión clara y plan de acción definido</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Comentarios -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <span>💬</span>
+                            Comentarios Adicionales
+                        </div>
+                        <div class="input-group">
+                            <label for="comentarios">¿Hay algo más que quieras compartir sobre tu bienestar integral?</label>
+                            <textarea id="comentarios" name="comentarios" rows="4" placeholder="Comparte cualquier inquietud, logro, situación específica o aspecto que consideres importante para tu evaluación psicológica..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="btn-submit">
+                        Generar Diagnóstico Psicológico
+                    </button>
+                    
+                    <div class="success-message" id="successMessage">
+                        <span class="success-icon">✅</span>
+                        <h3>¡Evaluación Psicológica Completada!</h3>
+                        <p>Hemos procesado tus respuestas. <strong>Revisa tu correo electrónico</strong> en los próximos minutos para recibir tu diagnóstico psicológico completo.</p>
+                    </div>
+                    
+                    <div class="form-navigation">
+                        <button type="button" class="btn-nav" onclick="prevStep(4)">← Anterior</button>
+                        <div></div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Analizando tus 12 respuestas psicológicas...</p>
+        </div>
+    </div>
+
+    <script>
+        // Función para scroll automático al inicio
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Navegación entre pasos
+        function nextStep(currentStep) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.getElementById(`step${currentStep + 1}`).classList.add('active');
+            updateStepIndicator(currentStep + 1);
+            scrollToTop(); // Scroll al cambiar de paso
+        }
+        
+        function prevStep(currentStep) {
+            document.getElementById(`step${currentStep}`).classList.remove('active');
+            document.getElementById(`step${currentStep - 1}`).classList.add('active');
+            updateStepIndicator(currentStep - 1);
+            scrollToTop(); // Scroll al cambiar de paso
+        }
+        
+        function updateStepIndicator(step) {
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((s, index) => {
+                if (index < step) {
+                    s.classList.add('active');
+                } else {
+                    s.classList.remove('active');
+                }
+            });
+        }
+        
+        // Manejo del formulario
+        document.getElementById('evaluationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Validar que todas las preguntas estén respondidas
+            const requiredRadios = document.querySelectorAll('input[type="radio"]:required');
+            let allAnswered = true;
+            
+            // Verificar que cada grupo de radio buttons tenga al menos uno seleccionado
+            const radioGroups = {};
+            requiredRadios.forEach(radio => {
+                const name = radio.name;
+                if (!radioGroups[name]) {
+                    radioGroups[name] = document.querySelector(`input[name="${name}"]:checked`);
+                }
+            });
+            
+            for (const group in radioGroups) {
+                if (!radioGroups[group]) {
+                    allAnswered = false;
+                    break;
+                }
+            }
+            
+            if (!allAnswered) {
+                alert('Por favor, responde todas las preguntas antes de enviar la evaluación psicológica.');
+                return;
+            }
+            
+            // Mostrar loading
+            document.getElementById('loading').style.display = 'block';
+            document.querySelector('.form-container').style.display = 'none';
+            
+            // Recopilar datos
+            const formData = {
+                nombre: document.getElementById('nombre').value,
+                email: document.getElementById('email').value,
+                comunicacion_familiar: document.querySelector('input[name="comunicacion_familiar"]:checked')?.value,
+                apoyo_familiar: document.querySelector('input[name="apoyo_familiar"]:checked')?.value,
+                relaciones_sociales: document.querySelector('input[name="relaciones_sociales"]:checked')?.value,
+                integracion_grupal: document.querySelector('input[name="integracion_grupal"]:checked')?.value,
+                rendimiento_academico: document.querySelector('input[name="rendimiento_academico"]:checked')?.value,
+                organizacion_tiempo: document.querySelector('input[name="organizacion_tiempo"]:checked')?.value,
+                motivacion_academica: document.querySelector('input[name="motivacion_academica"]:checked')?.value,
+                participacion_clase: document.querySelector('input[name="participacion_clase"]:checked')?.value,
+                estado_emocional: document.querySelector('input[name="estado_emocional"]:checked')?.value,
+                calidad_sueno: document.querySelector('input[name="calidad_sueno"]:checked')?.value,
+                manejo_estres: document.querySelector('input[name="manejo_estres"]:checked')?.value,
+                perspectiva_futuro: document.querySelector('input[name="perspectiva_futuro"]:checked')?.value,
+                comentarios: document.getElementById('comentarios').value,
+                sistema: 'evaluacion_psicologica_12p',
+                timestamp: new Date().toISOString()
+            };
+            
+            console.log('🧠 Datos de la evaluación psicológica:', formData);
+            
+            // URL DEL WEBHOOK
+            const webhookUrl = 'https://hook.us2.make.com/2pscwtfmbxpv35fef9ou1f9pgn3v32bs';
+            
+            // Enviar datos al webhook
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('successMessage').style.display = 'block';
+                    
+                    // Resetear formulario después de éxito
+                    setTimeout(() => {
+                        this.reset();
+                        document.getElementById('successMessage').style.display = 'none';
+                        document.querySelector('.form-container').style.display = 'block';
+                        // Volver al primer paso
+                        document.querySelectorAll('.form-step').forEach(step => step.classList.remove('active'));
+                        document.getElementById('step1').classList.add('active');
+                        updateStepIndicator(1);
+                        
+                        // ✅ NUEVO: Mostrar alerta de confirmación
+                        alert('✅ Formulario enviado exitosamente. Revisa tu correo electrónico en los próximos minutos para recibir tus resultados psicológicos.');
+                    }, 3000);
+                } else {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                document.getElementById('loading').style.display = 'none';
+                alert('Error al enviar la evaluación psicológica. Por favor, intenta nuevamente.');
+                document.querySelector('.form-container').style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>
